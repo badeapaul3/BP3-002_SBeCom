@@ -1,13 +1,12 @@
-package com.ecommerce.sbecom.controller;
+package com.ecommerce.project.controller;
 
-import com.ecommerce.sbecom.model.Category;
-import com.ecommerce.sbecom.service.CategoryService;
+import com.ecommerce.project.model.Category;
+import com.ecommerce.project.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
