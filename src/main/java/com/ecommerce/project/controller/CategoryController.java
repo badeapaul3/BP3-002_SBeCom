@@ -37,25 +37,18 @@ public class CategoryController {
 
     @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId){
-        try {
-            String status = categoryService.deleteCategory(categoryId);
-            //return new ResponseEntity<>(status, HttpStatus.OK);
-            //return ResponseEntity.ok(status);
-            return ResponseEntity.status(HttpStatus.OK).body(status);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+
+        String status = categoryService.deleteCategory(categoryId);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+        //return ResponseEntity.ok(status);
+        //return ResponseEntity.status(HttpStatus.OK).body(status);
     }
 
     @PutMapping("/public/categories/{categoryId}")
     public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category,
                                                  @PathVariable Long categoryId) {
-        try{
-            Category savedCategory = categoryService.updateCategory(category, categoryId);
-            return ResponseEntity.status(HttpStatus.OK).body("Category with id " +  savedCategory.getCategoryId() + " has been updated successfully");
-        }catch (ResponseStatusException e){
-            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
-        }
+        Category savedCategory = categoryService.updateCategory(category, categoryId);
+        return ResponseEntity.status(HttpStatus.OK).body("Category with id " +  savedCategory.getCategoryId() + " has been updated successfully");
     }
 
 }
