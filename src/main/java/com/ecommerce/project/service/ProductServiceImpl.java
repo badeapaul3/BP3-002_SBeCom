@@ -9,6 +9,7 @@ import com.ecommerce.project.repository.CategoryRepository;
 import com.ecommerce.project.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,11 +21,23 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class ProductServiceImpl implements ProductService{
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final FileService fileService;
+    private final String imagesPath;
+
+    public ProductServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository,
+                              ModelMapper modelMapper, FileService fileService, @Value("${project.image}") String imagesPath) {
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+        this.modelMapper = modelMapper;
+        this.fileService = fileService;
+        this.imagesPath = imagesPath;
+    }
+
+
 
     @Override
     public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
@@ -114,10 +127,9 @@ public class ProductServiceImpl implements ProductService{
         // Get the product from db
         Product productFromDb = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product","productId", productId));
-        // Upload image (to server or file system)
-        // Get filename of image
-        String path = System.getProperty("user.dir") + File.separator + "images/";
-        String filename = uploadImage(path, image);
+        // Upload image (to server or file system) and get filename
+        String path = System.getProperty("user.dir") + File.separator + imagesPath;
+        String filename = fileService.uploadImage(path, image);
 
         // Update the new filename to the product
         productFromDb.setImage(filename);
@@ -125,25 +137,6 @@ public class ProductServiceImpl implements ProductService{
         Product updatedProduct = productRepository.save(productFromDb);
         // Return the product mapped to DTO
         return modelMapper.map(updatedProduct, ProductDTO.class);
-    }
-
-    private String uploadImage(String path, MultipartFile file) throws IOException {
-        // File name of current file
-        String originalFileName = file.getOriginalFilename();
-        // Generate a unique file name
-        String randomId = UUID.randomUUID().toString();
-        String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
-        String filePath = path + File.separator + fileName;
-        // Check if path exists or create
-        File folder = new File(path);
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
-
-        // Upload to server
-        Files.copy(file.getInputStream(), Paths.get(filePath));
-        // return file name
-        return fileName;
     }
 
 
