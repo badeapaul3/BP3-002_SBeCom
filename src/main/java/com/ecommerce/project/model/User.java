@@ -41,10 +41,10 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    public User(String password, String email, String userName) {
-        this.password = password;
-        this.email = email;
+    public User(String userName, String email, String password) {
         this.userName = userName;
+        this.email = email;
+        this.password = password;
     }
 
     @Getter
