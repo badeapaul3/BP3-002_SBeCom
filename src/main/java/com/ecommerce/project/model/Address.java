@@ -34,20 +34,21 @@ public class Address {
     private String city;
 
     @NotBlank
-    @Size(min = 2, message = "State name must be at least 4 characters")
+    @Size(min = 2, message = "State name must be at least 2 characters")
     private String state;
 
     @NotBlank
-    @Size(min = 4, message = "Country name must be at least 4 characters")
+    @Size(min = 2, message = "Country name must be at least 2 characters")
     private String country;
 
     @NotBlank
-    @Size(min = 6, message = "ZIP code must be at least 4 characters")
+    @Size(min = 4, message = "ZIP code must be at least 4 characters")
     private String pincode;
 
     @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Address(String pincode, String country, String state, String city, String buildingName, String street) {
         this.pincode = pincode;
