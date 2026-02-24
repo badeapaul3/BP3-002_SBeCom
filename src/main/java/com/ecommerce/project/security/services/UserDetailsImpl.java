@@ -61,7 +61,10 @@ public class UserDetailsImpl implements UserDetails {
         return Objects.equals(id, that.id);
     }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, email, password, authorities);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
