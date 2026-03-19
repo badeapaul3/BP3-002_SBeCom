@@ -31,16 +31,18 @@ public class ProductServiceImpl implements ProductService{
     private final ModelMapper modelMapper;
     private final FileService fileService;
     private final String imagesPath;
+    private final String imageBaseUrl;
     private final CartRepository cartRepository;
     private final CartService cartService;
 
     public ProductServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository,
-                              ModelMapper modelMapper, FileService fileService, @Value("${project.image}") String imagesPath, CartRepository cartRepository, CartService cartService) {
+                              ModelMapper modelMapper, FileService fileService, @Value("${project.image}") String imagesPath, @Value("${image.base.url}") String imageBaseUrl, CartRepository cartRepository, CartService cartService) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.fileService = fileService;
         this.imagesPath = imagesPath;
+        this.imageBaseUrl = imageBaseUrl;
         this.cartRepository = cartRepository;
         this.cartService = cartService;
     }
@@ -98,6 +100,10 @@ public class ProductServiceImpl implements ProductService{
         productResponse.setTotalPages(pageProducts.getTotalPages());
         productResponse.setLastPage(pageProducts.isLast());
         return productResponse;
+    }
+
+    private String constructImageUrl(String imageName){
+        return imageBaseUrl.endsWith("/") ? imageBaseUrl + imageName : imageBaseUrl + "/" + imageName;
     }
 
     @Override
